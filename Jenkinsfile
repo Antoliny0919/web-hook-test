@@ -1,7 +1,7 @@
 pipeline {
   agent any
   
-  parameters { string(name: 'IMAGE_TAG', defaultValue: '', description: 'docker image tag') }
+  parameters { string(name: 'payload', defaultValue: '', description: 'test') }
 
 //   environment {
 //     IMAGE_TAG = "$WEB_DEPLOY_IMAGE_TAG"
