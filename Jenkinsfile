@@ -17,16 +17,14 @@ pipeline {
 	  script {
 	      def myobj = new JsonSlurper().parseText(payload)
 	      repositoryName = myobj.repository.full_name
+	      
 	    }
 	  sh "echo ${repositoryName}"
 	}
     } 
     stage('Build') {
       steps {
-	    sh '''
-        echo "Build Step!!"
-	echo "${repositoryName}"
-	    '''
+	sh "echo ${repositoryName} it is build step and use variable"	   
       }
     }
     stage('Deploy') {
