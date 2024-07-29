@@ -1,5 +1,7 @@
 import groovy.json.JsonSlurper
 
+def repositoryName = null
+
 pipeline {
   agent any
   
@@ -14,7 +16,7 @@ pipeline {
 	steps {
 	  script {
 	      def myobj = new JsonSlurper().parseText(payload)
-	      def repositoryName = myobj.repository.full_name
+	      repositoryName = myobj.repository.full_name
 	    }
 	}
     } 
