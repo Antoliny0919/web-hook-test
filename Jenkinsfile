@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 pipeline {
   agent any
   
@@ -11,7 +13,8 @@ pipeline {
     stage('get git branch name') {
 	steps {
 	  script {
-	      def myobj = readJSON text: payload
+	      def myobj = new JsonSlurper().parseText(payload)
+	      
 	      echo "repository full name is ${myobj.repository.full_name}"
 	    }
 	}
@@ -20,7 +23,6 @@ pipeline {
       steps {
 	    sh '''
         echo "Build Step!!"
-        echo "$payload"
 	    '''
       }
     }
