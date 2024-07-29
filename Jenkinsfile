@@ -18,13 +18,14 @@ pipeline {
 	      def myobj = new JsonSlurper().parseText(payload)
 	      repositoryName = myobj.repository.full_name
 	    }
+	  sh "echo ${repositoryName}"
 	}
     } 
     stage('Build') {
       steps {
 	    sh '''
         echo "Build Step!!"
-	echo "$repositoryName"
+	echo "${repositoryName}"
 	    '''
       }
     }
