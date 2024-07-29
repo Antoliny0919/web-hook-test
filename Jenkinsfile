@@ -12,7 +12,7 @@ pipeline {
       steps {
 	    sh '''
         echo "Build Step!!"
-        echo "$IAMGE_TAG"
+        echo "$payload"
 	    '''
       }
     }
