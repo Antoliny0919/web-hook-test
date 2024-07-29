@@ -8,6 +8,14 @@ pipeline {
 //   }
 
   stages {
+    stage('get git branch name') {
+	steps {
+	  script {
+	      def myobj = readJSON text: payload
+	      echo "repository full name is ${myobj.repository.full_name}"
+	    }
+	}
+    } 
     stage('Build') {
       steps {
 	    sh '''
