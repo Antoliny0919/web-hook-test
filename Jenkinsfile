@@ -40,13 +40,20 @@ pipeline {
       }
       stages {
         stage("Build") {
+          input {
+            message "Please enter the image version to be created."
+            ok "format v{major}.{minor}.{patch}"
+            parameters {
+              string(name: "IMAGE_TAG", defaultValue: "latest", description: "Tag of the image to be distributed")
+            }
+          }
           steps {
-	    echo "$TAG print now tag!!"
+	    echo "$IMAGE_TAG print now tag!!"
           }
         }
         stage("Deploy") {
           steps {
-            echo "deploy process"
+            echo "deploy process $IMAGE_TAG"
           }
         }
       }
