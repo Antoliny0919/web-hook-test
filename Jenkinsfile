@@ -23,9 +23,9 @@ pipeline {
         expression { return pullRequestState == "open" }
       }
       stages {
-        stage("test") {
+        stage("Test") {
           steps {
-            echo "opened!!"
+            echo "A testing process is required. Pytest"
           }
         }
       }
@@ -35,9 +35,14 @@ pipeline {
         expression { return pullRequestState == "closed" }
       }
       stages {
-        stage("test") {
+        stage("Build") {
           steps {
-            echo "closed!!"
+            echo "build process"
+          }
+        }
+        stage("Deploy") {
+          steps {
+            echo "deploy process"
           }
         }
       }
