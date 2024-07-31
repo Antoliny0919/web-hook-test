@@ -8,6 +8,10 @@ pipeline {
   
   parameters { string(name: 'payload', defaultValue: '', description: 'test') }
 
+  environment {
+    TAG = sh(returnStdout: true, script: "git tag --points-at=HEAD")
+  }
+
   stages {
     stage("parse-params") {
       steps {
@@ -37,7 +41,7 @@ pipeline {
       stages {
         stage("Build") {
           steps {
-            echo "build process"
+	    echo "$TAG print now tag!!"
           }
         }
         stage("Deploy") {
