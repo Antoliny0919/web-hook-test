@@ -8,6 +8,10 @@ pipeline {
   
   parameters { string(name: 'payload', defaultValue: '', description: 'test') }
 
+  environment {
+    TAG = sh(returnStdout: true, script: "git tag --points-at=HEAD")
+  }
+
   stages {
     stage("parse-params") {
       steps {
@@ -23,9 +27,9 @@ pipeline {
         expression { return pullRequestState == "open" }
       }
       stages {
-        stage("test") {
+        stage("Test") {
           steps {
-            echo "opened!!"
+            echo "A testing process is required. Pytest"
           }
         }
       }
@@ -35,9 +39,14 @@ pipeline {
         expression { return pullRequestState == "closed" }
       }
       stages {
-        stage("test") {
+        stage("Build") {
           steps {
-            echo "closed!!"
+	    echo "$TAG print now tag!!"
+          }
+        }
+        stage("Deploy") {
+          steps {
+            echo "deploy process"
           }
         }
       }
