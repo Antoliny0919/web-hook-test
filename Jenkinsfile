@@ -1,6 +1,7 @@
 import groovy.json.JsonSlurper
 
 def repositoryName = null
+def pullRequestState = null
 
 pipeline {
   agent any
@@ -17,9 +18,13 @@ pipeline {
 	  script {
 	      def myobj = new JsonSlurper().parseText(payload)
 	      repositoryName = myobj.repository.full_name
+	      pullRequestState = myobj.pull_request.state
+	      if(pullRequestState == "open") {
+		  echo "it is open state"
+		  sh "exit 1"
+		}
 	      
 	    }
-	  sh "echo ${repositoryName}"
 	}
     } 
     stage('Build') {
