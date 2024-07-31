@@ -8,43 +8,39 @@ pipeline {
   
   parameters { string(name: 'payload', defaultValue: '', description: 'test') }
 
-//   environment {
-//     IMAGE_TAG = "$WEB_DEPLOY_IMAGE_TAG"
-//   }
-
   stages {
-    stage('get git branch name') {
-	steps {
-	  script {
-	      def myobj = new JsonSlurper().parseText(payload)
-	      repositoryName = myobj.repository.full_name
-	      pullRequestState = myobj.pull_request.state
-	      if(pullRequestState == "open") {
-		  echo "it is open state"
-		  sh "exit 1"
-		}
-	      
-	    }
-	}
-    } 
-    stage('Build') {
+    stage("parse-params") {
       steps {
-	sh "echo ${repositoryName} it is build step and use variable"	   
+        script {
+	  def myobj = new JsonSlurper().parseText(payload)
+	  repositoryName = myobj.repository.full_name
+	  pullRequestState = myobj.pull_request.state
+        }
       }
     }
-    stage('Deploy') {
-      steps {
-        sh '''
-        echo "Deploy Step!!"
-        '''
+    stage("opened") {
+      when {
+        expression { return pullRequestState == "open" }
+      }
+      stages {
+        stage("test") {
+          steps {
+            echo "opened!!"
+          }
+        }
       }
     }
-    stage('Build Prod') {
-      steps {
-        sh '''
-        echo "Build Prod env stage"
-        '''
+    stage("closed") {
+      when {
+        expression { return pullRequestState == "closed" }
+      }
+      stages {
+        stage("test") {
+          steps {
+            echo "closed!!"
+          }
+        }
       }
     }
   }
-}
+} 
