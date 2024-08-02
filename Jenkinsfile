@@ -1,6 +1,5 @@
 import groovy.json.JsonSlurper
 
-def repositoryName = null
 def pullRequestState = null
 def IMAGE_TAG = null
 
@@ -9,12 +8,16 @@ pipeline {
   
   parameters { string(name: 'payload', defaultValue: '', description: 'test') }
 
+  environment {
+    AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')    
+  }
+
   stages {
     stage("parse-params") {
       steps {
         script {
 	  def myobj = new JsonSlurper().parseText(payload)
-	  repositoryName = myobj.repository.full_name
 	  pullRequestState = myobj.pull_request.state
         }
       }
@@ -48,12 +51,21 @@ pipeline {
 	    script {
               IMAGE_TAG = sh(returnStdout: true, script: "echo $TAG").trim()
             }
-	    echo "$IMAGE_TAG print now tag!!"
+            sh """
+              bash $HOME/my_pipeline/docker/image.sh \
+              --build='APP_ENV=stag' \
+              -- web ${IMAGE_TAG} 192.168.1.10:5000
+            """
           }
         }
         stage("Deploy") {
           steps {
-            echo "deploy process $IMAGE_TAG"
+            sh """
+              bash $HOME/my_pipeline/docker/update.sh \
+              --context=stag \
+              --stack=ancean \
+              -- web ${IMAGE_TAG} 192.168.1.10:5000
+            """
           }
         }
       }
