@@ -2,15 +2,12 @@ import groovy.json.JsonSlurper
 
 def repositoryName = null
 def pullRequestState = null
+def IMAGE_TAG = null
 
 pipeline {
   agent any
   
   parameters { string(name: 'payload', defaultValue: '', description: 'test') }
-
-  environment {
-    TAG = sh(returnStdout: true, script: "git tag --points-at=HEAD")
-  }
 
   stages {
     stage("parse-params") {
@@ -41,13 +38,16 @@ pipeline {
       stages {
         stage("Build") {
           input {
-            message "Please enter the image version to be created."
-            ok "format v{major}.{minor}.{patch}"
+            message "Please enter the image version to be created. format v{major}.{minor}.{patch}"
+            ok "Submit"
             parameters {
-              string(name: "IMAGE_TAG", defaultValue: "latest", description: "Tag of the image to be distributed")
+              string(name: "TAG", defaultValue: "latest", description: "Tag of the image to be distributed")
             }
           }
           steps {
+	    script {
+              IMAGE_TAG = sh(returnStdout: true, script: "echo $TAG").trim()
+            }
 	    echo "$IMAGE_TAG print now tag!!"
           }
         }
